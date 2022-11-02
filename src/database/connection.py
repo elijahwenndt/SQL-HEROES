@@ -31,14 +31,35 @@ def execute_query(query, params=None):
 
 # DO NOT TOUCH FILE ABOVE
 
-def select_all():
-    query = """
-        SELECT * from heroes
-    """
+# def select_all():
+#     query = """
+#         SELECT * from heroes
+#     """
 
-    list_of_heroes = execute_query(query).fetchall()
-    print(list_of_heroes)
-    for record in list_of_heroes:
-        print(record[1])
+#     list_of_heroes = execute_query(query).fetchall()
+#     print(list_of_heroes)
+#     for record in list_of_heroes:
+#         print(record[1])
 
-select_all()
+# select_all()
+
+def basic_info():
+    x = input('WHO IS ACCESSING THE TERMINAL: ')
+    print('hello ' + x)
+    if x == 'director':
+        y = input('WOULD YOU LIKE TO SEE A CURRENT LIST OF ACTIVE HEROES? (y/n): ')
+        if y == 'y':
+            query = """
+                SELECT heroes.name, ability_types.name 
+                FROM heroes
+                JOIN abilities ON heroes.id = abilities.hero_id
+                JOIN ability_types ON ability_types.id = abilities.ability_type_id 
+            """
+            list_of_heroes = execute_query(query).fetchall()
+            for record in list_of_heroes:
+                    print('')
+                    print(record[0] + ' ' + record[1])
+        else: print('return to menu')
+
+    else: print('ACCESS DENIED, CALLING AUTHORITIES')
+basic_info()
