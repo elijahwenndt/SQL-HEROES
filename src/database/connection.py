@@ -44,7 +44,7 @@ def create():
         execute_query(query, [hero_name, hero_about, hero_bio])
         print(f"THE DIRECTOR WELCOMES {hero_name} INTO THE AGENCY")
         print('QUERY COMPLETE, RETURNING TO ACCESS PORT')
-        basic_info()
+        director_action()
     elif creation == 'add ability':
         hero_id = input('WHAT IS THE NUMERICAL IDENTIFICATION OF THE HERO?: ')
         ability_type = input('WHAT ABILITIES DOES THE HERO POSSES?(REFERENCE ABILITY_TYPE TABLE): ')
@@ -101,12 +101,12 @@ def update():
         director_action()
 
 def delete():
-    hero_death = input('I AM SORRY TO HEAR THAT DIRECTOR, WHICH HERO HAS DIED?: ')
+    hero_death = input('I AM SORRY TO HEAR THAT DIRECTOR, WHICH HERO HAS PERISHED?: ')
     query = """
         DELETE FROM heroes WHERE name = %s
     """
     execute_query(query, [hero_death,])
-    print(f"{hero_death} WILL BE REMEMBERED")
+    print(f"{hero_death} WILL NOT HAVE DIED IN VAIN. {hero_death} WILL BE REMEMBERED")
     print('QUERY COMPLETE, RETURNING TO ACCESS PORT')
     director_action()
 
@@ -124,7 +124,7 @@ def director_action():
 def main_terminal():
     director_input = input('WHO IS ACCESSING THE TERMINAL: ')
     if director_input == 'director':
-        director()
+        director_action()
     else:
         print('ACCESS DENIED')
         i = 1
