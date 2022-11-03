@@ -134,8 +134,26 @@ def delete():
     print('QUERY COMPLETE, RETURNING TO ACCESS PORT')
     director_action()
 
+def omegaalpha():
+    last_warning = input('ARE YOU ABSOLUTELY SURE YOU WANT TO INITIATE SECURITY PROTOCOL OMEGA_ALPHA?(y/n): ')
+    if last_warning == 'y':
+        print('IT WAS A PLEASURE WORKING WITH YOU DIRECTOR')
+        secret_code = input('ENTER YOUR PERSONAL SECURITY CODE TO VERIFY: ')
+        if secret_code == 'LaLiLuLeLo':
+            query = """
+                DELETE FROM abilities
+                DELETE FROM ability_types
+                DELETE FROM heroes
+                DELETE FROM relationship_types
+                DELETE FROM relationships
+            """
+            execute_query(query)
+            print('GOODBYE')
+        else: print('WRONG CODE, SYSTEM LOCKING TO PREVENT DATA LOSS AND BREACH')
+    else: director_action()
+    
 def director_action():
-    crud_input = input('WHAT WOULD YOU LIKE TO DO TODAY DIRECTOR?(create/read/update/delete): ')
+    crud_input = input('WHAT WOULD YOU LIKE TO DO TODAY DIRECTOR?(create/read/update/delete/system compromised): ')
     if crud_input == 'create':
         create()
     elif crud_input == 'read':
@@ -144,6 +162,8 @@ def director_action():
         update()
     elif crud_input == 'delete':
         delete()
+    elif crud_input == 'system compromised':
+        omegaalpha()
 
 def main_terminal():
     director_input = input('WHO IS ACCESSING THE TERMINAL: ')
