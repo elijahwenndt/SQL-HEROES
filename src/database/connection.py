@@ -81,10 +81,11 @@ def read():
     z = input('WHAT INFORMATION WOULD YOU LIKE TO KNOW?(abilities/relationships): ')
     if z == 'abilities':
         query = """
-            SELECT heroes.name, ability_types.name 
+            SELECT heroes.name, STRING_AGG(ability_types.name, ', ') 
             FROM heroes
             JOIN abilities ON heroes.id = abilities.hero_id
             JOIN ability_types ON ability_types.id = abilities.ability_type_id 
+            GROUP BY heroes.name
         """
         list_of_heroes = execute_query(query).fetchall()
         for record in list_of_heroes:
@@ -98,6 +99,7 @@ def read():
             JOIN heroes h1 ON h1.id = relationships.hero1_id
             JOIN heroes h2 ON h2.id = relationships.hero2_id
             JOIN relationship_types ON relationship_types.id = relationships.relationship_type_id
+            
         """
         list_of_heroes = execute_query(query).fetchall()
         for record in list_of_heroes:
@@ -158,3 +160,5 @@ main_terminal()
 
 
 
+# group by heroes.name
+# concat
