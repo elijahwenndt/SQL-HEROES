@@ -32,7 +32,7 @@ def execute_query(query, params=None):
 # NO TOUCHIE
 
 def create():
-    creation = input('WHAT WOULD YOU LIKE TO CREATE?(new hero/add ability): ')
+    creation = input('WHAT WOULD YOU LIKE TO CREATE?(new hero/add ability to hero): ')
     if creation == 'new hero':
         hero_name = input('WHAT IS THE NAME OF THE HERO THAT IS JOINED THE AGENCY?: ')
         hero_about = input('WHAT DO YOU KNOW ABOUT THE HERO?: ')
@@ -45,7 +45,7 @@ def create():
         print(f"THE DIRECTOR WELCOMES {hero_name} INTO THE AGENCY")
         print('QUERY COMPLETE, RETURNING TO ACCESS PORT')
         director_action()
-    elif creation == 'add ability':
+    elif creation == 'add ability to hero':
         hero_id = input('WHAT IS THE NUMERICAL IDENTIFICATION OF THE HERO?: ')
         ability_type = input('WHAT ABILITIES DOES THE HERO POSSES?(REFERENCE ABILITY_TYPE TABLE): ')
         query = """
@@ -69,7 +69,7 @@ def read():
                 print('')
                 print(record[0])
     else: print('OK')
-    z = input('WHAT INFORMATION WOULD YOU LIKE TO KNOW?(abilities): ')
+    z = input('WHAT INFORMATION WOULD YOU LIKE TO KNOW?(abilities/relationships): ')
     if z == 'abilities':
         query = """
             SELECT heroes.name, ability_types.name 
@@ -81,6 +81,18 @@ def read():
         for record in list_of_heroes:
                 print('')
                 print(record[0] + ' ' + record[1])
+    elif z == 'relationships':
+        query = """
+            SELECT h1.name, relationship_types.name, h2.name
+            FROM relationships
+            JOIN heroes h1 ON h1.id = relationships.hero1_id
+            JOIN heroes h2 ON h2.id = relationships.hero2_id
+            JOIN relationship_types ON relationship_types.id = relationships.relationship_type_id
+        """
+        list_of_heroes = execute_query(query).fetchall()
+        for record in list_of_heroes:
+                print('')
+                print(record[0] + ' ' + 'is a' + ' ' + record[1] + ' ' + 'with' + ' ' + record[2])
     else: print('INVALID, EXIT PROTOCOL INITIATED')
     print('QUERY COMPLETE, RETURNING TO ACCESS PORT')
     director_action()
