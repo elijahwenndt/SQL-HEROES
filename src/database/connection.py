@@ -141,17 +141,17 @@ def omegaalpha():
         secret_code = input('ENTER YOUR PERSONAL SECURITY CODE TO VERIFY: ')
         if secret_code == 'LaLiLuLeLo':
             query = """
-                DELETE FROM abilities
-                DELETE FROM ability_types
-                DELETE FROM heroes
-                DELETE FROM relationship_types
-                DELETE FROM relationships
+                DELETE FROM abilities;
+                DELETE FROM ability_types;
+                DELETE FROM heroes;
+                DELETE FROM relationship_types;
+                DELETE FROM relationships;
             """
             execute_query(query)
             print('GOODBYE')
         else: print('WRONG CODE, SYSTEM LOCKING TO PREVENT DATA LOSS AND BREACH')
     else: director_action()
-    
+
 def director_action():
     crud_input = input('WHAT WOULD YOU LIKE TO DO TODAY DIRECTOR?(create/read/update/delete/system compromised): ')
     if crud_input == 'create':
