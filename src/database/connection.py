@@ -47,19 +47,46 @@ def basic_info():
     x = input('WHO IS ACCESSING THE TERMINAL: ')
     print('hello ' + x)
     if x == 'director':
-        y = input('WOULD YOU LIKE TO SEE A CURRENT LIST OF ACTIVE HEROES? (y/n): ')
-        if y == 'y':
+        a = input('WHAT WOULD YOU LIKE TO DO DIRECTOR?(CREATE/READ): ')
+        if a == 'read':
+            y = input('WOULD YOU LIKE TO SEE A CURRENT LIST OF ACTIVE HEROES? (y/n): ')
+            if y == 'y':
+                query = """
+                    SELECT heroes.name 
+                    FROM heroes
+                """
+                list_of_heroes = execute_query(query).fetchall()
+                for record in list_of_heroes:
+                        print('')
+                        print(record[0])
+            else: print('OK')
+            z = input('WHAT INFORMATION WOULD YOU LIKE TO KNOW?(abilities): ')
+            if z == 'abilities':
+                query = """
+                    SELECT heroes.name, ability_types.name 
+                    FROM heroes
+                    JOIN abilities ON heroes.id = abilities.hero_id
+                    JOIN ability_types ON ability_types.id = abilities.ability_type_id 
+                """
+                list_of_heroes = execute_query(query).fetchall()
+                for record in list_of_heroes:
+                        print('')
+                        print(record[0] + ' ' + record[1])
+            else: print('INVALID')
+        elif a == 'create':
+            hero_name = print('WHAT IS THE NAME OF THE HERO THAT IS JOINED THE AGENCY?: ')
+            hero_about = print('WHAT DO YOU KNOW ABOUT THE HERO?: ')
+            hero_bio = print('WHAT IS THE HEROES BACKSTORY?: ')
             query = """
-                SELECT heroes.name, ability_types.name 
-                FROM heroes
-                JOIN abilities ON heroes.id = abilities.hero_id
-                JOIN ability_types ON ability_types.id = abilities.ability_type_id 
+                INSERT INTO heroes (name, about_me, biography)
+                VALUES (%s, %s, %s);
             """
-            list_of_heroes = execute_query(query).fetchall()
-            for record in list_of_heroes:
-                    print('')
-                    print(record[0] + ' ' + record[1])
-        else: print('return to menu')
-
+            execute_query(query, [hero_name, hero_about, hero_bio])
+            print(f"THE DIRECTOR WELCOMES {hero_name} INTO THE AGENCY")
     else: print('ACCESS DENIED, CALLING AUTHORITIES')
 basic_info()
+
+# SELECT heroes.name, ability_types.name 
+#                 FROM heroes
+#                 JOIN abilities ON heroes.id = abilities.hero_id
+#                 JOIN ability_types ON ability_types.id = abilities.ability_type_id
