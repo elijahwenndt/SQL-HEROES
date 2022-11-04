@@ -32,6 +32,9 @@ def execute_query(query, params=None):
 # NO TOUCHIE
 
 def create():
+    ability_id = []
+    create_id_list = []
+
     creation = input('WHAT WOULD YOU LIKE TO CREATE?(new hero/add ability to hero/new ability discovered): ')
     if creation == 'new hero':
         hero_name = input('WHAT IS THE NAME OF THE HERO THAT IS JOINED THE AGENCY?: ')
@@ -52,10 +55,26 @@ def create():
             INSERT INTO abilities (hero_id, ability_type_id)
             VALUES (%s, %s);
         """
-        execute_query(query, [hero_id, ability_type])
-        print("HERO'S ABILITY ADDED")
-        print('QUERY COMPLETE, RETURNING TO ACCESS PORT')
-        director_action()
+        query2 = """
+            SELECT * FROM ability_types
+        """
+        query3 = """
+            SELECT * FROM heroes
+        """
+        creation_hero_check = execute_query(query3)
+        creation_check = execute_query(query2)
+        for heroid in creation_hero_check:
+            create_id_list.append(heroid[0])
+        for abilityid in creation_check:
+            ability_id.append(abilityid[0])
+        if  int(ability_type) in ability_id and int(hero_id) in create_id_list:
+            execute_query(query, [hero_id, ability_type])
+            print("HERO'S ABILITY ADDED")
+            print('QUERY COMPLETE, RETURNING TO ACCESS PORT')
+            director_action()
+        else:
+            print('NO ABILITY OR HERO EXIST BY THAT ID')
+            director_action()
     elif creation == 'new ability discovered':
         ability_create = input('WHAT NEW ABILITY HAS THE AGENCY DISCOVERED?: ')
         query = """
@@ -65,7 +84,9 @@ def create():
         execute_query(query, [ability_create,])
         print(f"INTERESTING, THE SCIENCE TEAM WILL NEED TO STUDY {ability_create}")
         director_action()
-
+    else:
+        print('IM SORRY THAT SELECTION DOES NOT EXIST')
+        director_action()
 def read():
     y = input('WOULD YOU LIKE TO SEE A CURRENT LIST OF ACTIVE HEROES? (y/n): ')
     if y == 'y':
@@ -108,8 +129,11 @@ def read():
     
         print('QUERY COMPLETE, RETURNING TO ACCESS PORT')
         director_action()
-
+    else: 
+        print('IM SORRY THAT SELECTION DOES NOT EXIST')
+        director_action()
 def update():
+    id_list = []
     update_info = input('WHAT WOULD YOU LIKE TO CHANGE?(name): ')
     if update_info == 'name':
         which_hero = input('WHICH HERO IS CHANGING THERE IDENTITY?(REFERENCE HERO(ID) TABLE): ')
@@ -119,23 +143,66 @@ def update():
             SET name = %s
             WHERE id = %s
         """
-        execute_query(query, [new_hero_name, which_hero])
-        print(f"THE AGENCY NOW RECOGNIZES {new_hero_name}")
-        print('QUERY COMPLETE, RETURNING TO ACCESS PORT')
+        query2 = """
+            SELECT *
+            FROM heroes
+        """
+        update_check = execute_query(query2)
+        for heroid in update_check:
+            id_list.append(heroid[0])
+        if int(which_hero) in id_list:
+            execute_query(query, [new_hero_name, which_hero])
+            print(f"THE AGENCY NOW RECOGNIZES {new_hero_name}")
+            print('QUERY COMPLETE, RETURNING TO ACCESS PORT')
+            director_action()
+        else:
+            print('NO HERO EXISTS WITH THAT ID')
+            director_action()
+    else: 
+        print('IM SORRY THAT SELECTION DOES NOT EXIST')
         director_action()
 
 def delete():
+    delete_id_list = []
     hero_death = input('I AM SORRY TO HEAR THAT DIRECTOR, WHICH HERO HAS PERISHED?: ')
     query = """
         DELETE FROM heroes WHERE name = %s
     """
-    execute_query(query, [hero_death,])
-    print(f"{hero_death} WILL NOT HAVE DIED IN VAIN. {hero_death} WILL BE REMEMBERED")
-    print('QUERY COMPLETE, RETURNING TO ACCESS PORT')
-    director_action()
+    query2 = """
+        SELECT * FROM heroes
+    """
+    delete_update_check = execute_query(query2)
+    for heroname in delete_update_check:
+        delete_id_list.append(heroname[1])
+    if hero_death in delete_id_list:
+        execute_query(query, [hero_death,])
+        print(f"{hero_death} WILL NOT HAVE DIED IN VAIN. {hero_death} WILL BE REMEMBERED")
+        print('QUERY COMPLETE, RETURNING TO ACCESS PORT')
+        director_action()
+    else:
+        print('NO HERO EXISTS BY THAT NAME')
+        director_action()
+        
+def omegaalpha():
+    last_warning = input('ARE YOU ABSOLUTELY SURE YOU WANT TO INITIATE SECURITY PROTOCOL OMEGA_ALPHA?(y/n): ')
+    if last_warning == 'y':
+        print('IT WAS A PLEASURE WORKING WITH YOU DIRECTOR')
+        secret_code = input('ENTER YOUR PERSONAL SECURITY CODE TO VERIFY: ')
+        if secret_code == 'LaLiLuLeLo':
+            query = """
+                DELETE FROM abilities;
+                DELETE FROM ability_types;
+                DELETE FROM heroes;
+                DELETE FROM relationship_types;
+                DELETE FROM relationships;
+            """
+            execute_query(query)
+            print('GOODBYE')
+        else: print('WRONG CODE, SYSTEM LOCKING TO PREVENT DATA LOSS AND BREACH')
+    else: director_action()
 
 def director_action():
-    crud_input = input('WHAT WOULD YOU LIKE TO DO TODAY DIRECTOR?(create/read/update/delete): ')
+    crud_input = input('WHAT WOULD YOU LIKE TO DO TODAY DIRECTOR?(create/read/update/delete/system compromised): ')
     if crud_input == 'create':
         create()
     elif crud_input == 'read':
@@ -144,6 +211,8 @@ def director_action():
         update()
     elif crud_input == 'delete':
         delete()
+    elif crud_input == 'system compromised':
+        omegaalpha()
 
 def main_terminal():
     director_input = input('WHO IS ACCESSING THE TERMINAL: ')
